@@ -9,16 +9,15 @@ export class RegisterUserDto {
     message: '昵称不能为空',
   })
   nickName: string;
+
   @IsNotEmpty({
-    message: '用户名不能为空',
+    message: '密码不能为空',
   })
   @MinLength(6, {
     message: '密码不能少于 6 位',
   })
   password: string;
-  @IsNotEmpty({
-    message: '用户名不能为空',
-  })
+
   @IsEmail(
     {},
     {
