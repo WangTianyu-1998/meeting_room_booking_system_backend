@@ -11,9 +11,23 @@ import { Permission } from './permission/entities/permission.entity';
 import { RedisModule } from './redis/redis.module';
 import { EmailModule } from './email/email.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
+    // jwt
+    JwtModule.registerAsync({
+      global: true,
+      useFactory(configService: ConfigService) {
+        return {
+          secret: configService.get('jwt_secret'),
+          signOptions: {
+            expiresIn: '30m', //默认30分钟
+          },
+        };
+      },
+      inject: [ConfigService],
+    }),
     // 指定全局配置env
     ConfigModule.forRoot({
       isGlobal: true,
