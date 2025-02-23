@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, SetMetadata } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
@@ -8,5 +8,18 @@ export class AppController {
   @Get()
   getHello(): string {
     return this.appService.getHello();
+  }
+
+  @Get('aaa')
+  @SetMetadata('require-login', true)
+  @SetMetadata('require-permission', ['ddd'])
+  aaa() {
+    return 'aaa';
+  }
+
+  @Get('bbb')
+  @SetMetadata('require-login', true)
+  bbb() {
+    return 'bbb';
   }
 }

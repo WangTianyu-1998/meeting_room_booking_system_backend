@@ -119,7 +119,6 @@ export class UserService {
       },
       relations: ['roles', 'roles.permissions'],
     });
-    console.log('🚀 ~ UserService ~ login ~ user:', user);
     if (!user) {
       throw new HttpException('用户不存在', HttpStatus.BAD_REQUEST);
     }
