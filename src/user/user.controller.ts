@@ -35,7 +35,7 @@ export class UserController {
   @Get('init-data')
   async initData() {
     await this.userService.initData();
-    return ResponseUtil.success('初始化User成功');
+    return '初始化User成功';
   }
 
   // 注册模块
@@ -54,7 +54,7 @@ export class UserController {
       subject: '注册验证码',
       html: `<p style="font-size:24;color: orangered; font-weight: 700;">欢迎来到瑜小窝, 你的注册验证码是 ${code}</p>`,
     });
-    return ResponseUtil.success('发送成功');
+    return '发送成功';
   }
 
   // 登录
@@ -85,7 +85,7 @@ export class UserController {
       },
     );
 
-    return ResponseUtil.success('登录成功', vo);
+    return vo;
   }
 
   @Post('admin/login')
@@ -115,7 +115,7 @@ export class UserController {
       },
     );
 
-    return ResponseUtil.success('登录成功', vo);
+    return vo;
   }
 
   // 刷新token
