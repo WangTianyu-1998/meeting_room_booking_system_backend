@@ -252,4 +252,17 @@ export class UserService {
       return '用户修改密码失败';
     }
   }
+
+  /**
+   * 冻结用户
+   */
+  async freeUserById(id: number) {
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw new HttpException('该用户不存在', HttpStatus.BAD_REQUEST);
+    }
+    user.isFrozen = true;
+
+    await this.userRepository.save(user);
+  }
 }

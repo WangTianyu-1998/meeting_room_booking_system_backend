@@ -294,4 +294,13 @@ export class UserController {
     });
     return '发送成功';
   }
+
+  /**
+   * 冻结用户
+   */
+  @Get('freeze')
+  async freeze(@Query('id') userId: number) {
+    await this.userService.freeUserById(userId);
+    return 'success';
+  }
 }
