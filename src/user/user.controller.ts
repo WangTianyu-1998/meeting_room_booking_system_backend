@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Get,
   Inject,
   Post,
@@ -18,6 +19,7 @@ import { RequireLogin, UserInfo } from 'src/custom.decorator';
 import { UserDetailVo } from './vo/user-info.vo';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { generateParseIntPipe } from 'src/utils';
 
 @Controller('user')
 export class UserController {
@@ -302,5 +304,31 @@ export class UserController {
   async freeze(@Query('id') userId: number) {
     await this.userService.freeUserById(userId);
     return 'success';
+  }
+
+  /**
+   * 用户列表
+   */
+  @Get('list')
+  async list(
+    @Query('pageNo', new DefaultValuePipe(1), generateParseIntPipe('pageNo'))
+    pageNo: number,
+    @Query(
+      'pageSize',
+      new DefaultValuePipe(10), // 给默认值
+      generateParseIntPipe('pageSize'), // 校验参数
+    )
+    pageSize: number,
+    @Query('username') username: string,
+    @Query('nickName') nickName: string,
+    @Query('email') email: string,
+  ) {
+    return await this.userService.findUsersByPage(
+      pageNo,
+      pageSize,
+      username,
+      nickName,
+      email,
+    );
   }
 }

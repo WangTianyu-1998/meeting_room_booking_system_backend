@@ -1,3 +1,4 @@
+import { BadRequestException, ParseIntPipe } from '@nestjs/common';
 import * as crypto from 'crypto';
 
 export function md5(str: string) {
@@ -6,21 +7,15 @@ export function md5(str: string) {
   return hash.digest('hex');
 }
 
-export class ResponseUtil {
-  static success(message: string, data?: any) {
-    return {
-      code: 200,
-      message,
-      status: 'success',
-      data,
-    };
-  }
-
-  static error(code: number, message: string) {
-    return {
-      code,
-      message,
-      status: 'error',
-    };
-  }
+/**
+ * 参数校验为数字
+ * @param name 参数名称
+ * @returns
+ */
+export function generateParseIntPipe(name) {
+  return new ParseIntPipe({
+    exceptionFactory() {
+      throw new BadRequestException(name + '应该为数字');
+    },
+  });
 }
