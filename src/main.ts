@@ -6,6 +6,7 @@ import { FormatResponseInterceptor } from './format-response.interceptor';
 import { InvokeRecordInterceptor } from './invoke-record.interceptor';
 import { UnLoginFilter } from './unlogin.filter';
 import { CustomExceptionFilter } from './custom-exception.filter';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,7 +21,19 @@ async function bootstrap() {
   app.useGlobalFilters(new UnLoginFilter());
   // 5. 全局过滤器 统一HttpException错误返回的格式
   app.useGlobalFilters(new CustomExceptionFilter());
-  // 5. 读取全局在.env中放置的配置
+  // 6. 生成接口文档
+  const config = new DocumentBuilder()
+    .setTitle('会议室预订系统')
+    .setDescription('api 接口文档')
+    .setVersion('1.0')
+    .addBearerAuth({
+      type: 'http',
+      description: '基于 jwt 的验证',
+    })
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api-doc', app, document);
+  // 7. 读取全局在.env中放置的配置
   const configService = app.get(ConfigService);
   await app.listen(configService.get('nest_server_port') ?? 333);
 }
