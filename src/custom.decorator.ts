@@ -3,7 +3,6 @@ import {
   SetMetadata,
   ExecutionContext,
 } from '@nestjs/common';
-import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 import { Request } from 'express';
 
 /**

@@ -17,6 +17,7 @@ export class User {
   @Column({
     length: 50,
     comment: '账号',
+    unique: true,
   })
   username: string;
 

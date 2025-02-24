@@ -118,6 +118,7 @@ export class UserController {
       {
         userId: vo.userInfo.id,
         username: vo.userInfo.username,
+        email: vo.userInfo.email,
         roles: vo.userInfo.roles,
         permissions: vo.userInfo.permissions,
       },
@@ -161,6 +162,7 @@ export class UserController {
       {
         userId: vo.userInfo.id,
         username: vo.userInfo.username,
+        email: vo.userInfo.email,
         roles: vo.userInfo.roles,
         permissions: vo.userInfo.permissions,
       },
@@ -211,6 +213,7 @@ export class UserController {
         {
           userId: user.id,
           username: user.username,
+          email: user.email,
           roles: user.roles,
           permissions: user.permissions,
         },
@@ -232,7 +235,7 @@ export class UserController {
 
       const vo = new RefreshTokenVo();
       vo.access_token = access_token;
-      vo.refresh_token = refreshToken;
+      vo.refresh_token = refresh_token;
 
       return vo;
     } catch (e) {
@@ -267,6 +270,7 @@ export class UserController {
         {
           userId: user.id,
           username: user.username,
+          email: user.email,
           roles: user.roles,
           permissions: user.permissions,
         },
@@ -286,10 +290,11 @@ export class UserController {
         },
       );
 
-      return {
-        access_token,
-        refresh_token,
-      };
+      const vo = new RefreshTokenVo();
+      vo.access_token = access_token;
+      vo.refresh_token = refresh_token;
+
+      return vo;
     } catch (e) {
       throw new UnauthorizedException('token 已失效，请重新登录');
     }
@@ -330,7 +335,7 @@ export class UserController {
    * @param passwordDto
    * @returns
    */
-  @ApiBearerAuth()
+  // @ApiBearerAuth()
   @ApiBody({
     type: UpdateUserPasswordDto,
   })
@@ -339,19 +344,18 @@ export class UserController {
     description: '验证码已失效/不正确',
   })
   @Post(['update_password', 'admin/update_password'])
-  @RequireLogin()
+  // @RequireLogin()
   updatePassword(
-    @UserInfo('userId') userId: number,
+    // @UserInfo('userId') userId: number,
     @Body() passwordDto: UpdateUserPasswordDto,
   ) {
-    console.log('userId----', userId);
-    return this.userService.updatePassword(userId, passwordDto);
+    return this.userService.updatePassword(passwordDto);
   }
 
   /**
    * 获取邮箱验证码密码
    */
-  @ApiBearerAuth()
+  // @ApiBearerAuth()
   @ApiQuery({
     name: 'address',
     description: '邮箱地址',
@@ -361,7 +365,7 @@ export class UserController {
     type: String,
     description: '发送成功',
   })
-  @RequireLogin()
+  // @RequireLogin()
   @Get('update_password/captcha')
   async updatePasswordCaptcha(@Query('address') address: string) {
     const code = Math.random().toString().slice(2, 8);
@@ -411,18 +415,20 @@ export class UserController {
    * @param address
    * @returns
    */
+  @ApiBearerAuth()
+  @ApiResponse({
+    type: String,
+    description: '发送成功',
+  })
+  @RequireLogin()
   @Get('update/captcha')
-  async updateCaptcha(@Query('address') address: string) {
+  async updateCaptcha(@UserInfo('email') email: string) {
     const code = Math.random().toString().slice(2, 8);
 
-    await this.redisService.set(
-      `update_user_captcha_${address}`,
-      code,
-      10 * 60,
-    );
+    await this.redisService.set(`update_user_captcha_${email}`, code, 10 * 60);
 
     await this.emailService.sendMail({
-      to: address,
+      to: email,
       subject: '更改用户信息验证码',
       html: `<p>你的验证码是 ${code}</p>`,
     });

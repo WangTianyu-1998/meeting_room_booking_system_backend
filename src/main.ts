@@ -35,6 +35,8 @@ async function bootstrap() {
   SwaggerModule.setup('api-doc', app, document);
   // 7. 读取全局在.env中放置的配置
   const configService = app.get(ConfigService);
+  // 8. 跨域
+  app.enableCors();
   await app.listen(configService.get('nest_server_port') ?? 333);
 }
 void bootstrap();
