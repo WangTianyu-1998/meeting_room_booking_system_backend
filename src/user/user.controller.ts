@@ -186,7 +186,6 @@ export class UserController {
   }
 
   // 刷新token
-  @Get('refresh')
   @ApiQuery({
     name: 'refreshToken',
     type: String,
@@ -203,7 +202,8 @@ export class UserController {
     description: '刷新成功',
     type: RefreshTokenVo,
   })
-  async refresh(@Query('refreshToken') refreshToken: string) {
+  @Get('refresh')
+  async refresh(@Query('refresh_token') refreshToken: string) {
     try {
       const data = this.jwtService.verify(refreshToken);
 
