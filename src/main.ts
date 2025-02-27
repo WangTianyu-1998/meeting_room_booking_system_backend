@@ -7,9 +7,10 @@ import { InvokeRecordInterceptor } from './invoke-record.interceptor';
 import { UnLoginFilter } from './unlogin.filter';
 import { CustomExceptionFilter } from './custom-exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // 1. 全局增加校验
   app.useGlobalPipes(new ValidationPipe());
@@ -35,7 +36,11 @@ async function bootstrap() {
   SwaggerModule.setup('api-doc', app, document);
   // 7. 读取全局在.env中放置的配置
   const configService = app.get(ConfigService);
-  // 8. 跨域
+  // 8. 静态资源
+  app.useStaticAssets('uploads', {
+    prefix: '/uploads',
+  });
+  // 9. 跨域
   app.enableCors();
   await app.listen(configService.get('nest_server_port') ?? 333);
 }
