@@ -12,6 +12,10 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  app.useStaticAssets('uploads', {
+    prefix: '/uploads',
+  });
+
   // 1. 全局增加校验
   app.useGlobalPipes(new ValidationPipe());
   // 2. 全局拦截器-统一返回格式
@@ -37,11 +41,13 @@ async function bootstrap() {
   // 7. 读取全局在.env中放置的配置
   const configService = app.get(ConfigService);
   // 8. 静态资源
-  app.useStaticAssets('uploads', {
-    prefix: '/uploads',
-  });
+
   // 9. 跨域
   app.enableCors();
+  console.log(
+    'redis_server_host------,',
+    configService.get('redis_server_host'),
+  );
   await app.listen(configService.get('nest_server_port') ?? 333);
 }
 void bootstrap();

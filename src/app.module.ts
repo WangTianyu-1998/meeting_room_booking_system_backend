@@ -18,6 +18,7 @@ import { PermissionGuard } from './permission.guard';
 import { MeetingRoom } from './meeting-room/entities/meeting-room.entity';
 import { MeetingRoomModule } from './meeting-room/meeting-room.module';
 import { BookingModule } from './booking/booking.module';
+import * as path from 'path';
 
 @Module({
   imports: [
@@ -37,7 +38,8 @@ import { BookingModule } from './booking/booking.module';
     // 指定全局配置env
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: 'src/.env',
+      // envFilePath: 'src/.env',
+      envFilePath: path.join(__dirname, '.env'),
     }),
     // mysql配置
     TypeOrmModule.forRootAsync({
