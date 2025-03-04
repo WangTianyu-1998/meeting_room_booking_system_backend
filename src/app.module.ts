@@ -51,7 +51,8 @@ import * as path from 'path';
           username: configService.get('mysql_server_username'),
           password: configService.get('mysql_server_password'),
           database: configService.get('mysql_server_database'),
-          synchronize: true,
+          synchronize: false, // 取消自动同步实体到数据库
+          // synchronize: true,
           logging: true,
           entities: [User, Role, Permission, MeetingRoom],
           poolSize: 10,
