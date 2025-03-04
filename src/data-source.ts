@@ -6,8 +6,10 @@ import { MeetingRoom } from './meeting-room/entities/meeting-room.entity';
 import { Booking } from './booking/entities/booking.entity';
 import { Role } from './role/entities/role.entity';
 import { Permission } from './permission/entities/permission.entity';
+import * as path from 'path';
 
-config({ path: 'src/.env-migration' });
+// 加载环境变量文件
+config({ path: '.env-migration' });
 
 console.log(process.env);
 
@@ -29,7 +31,7 @@ export default new DataSource({
   logging: true,
   entities: [User, Role, Permission, MeetingRoom, Booking],
   poolSize: 10,
-  migrations: ['src/migrations/**.ts'],
+  migrations: ['/app/migrations/**.js'], // 修改为 /app/migrations
   connectorPackage: 'mysql2',
   extra: {
     authPlugin: 'sha256_password',
